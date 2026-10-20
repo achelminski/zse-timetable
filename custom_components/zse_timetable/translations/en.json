@@ -1,0 +1,65 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "School timetable (VULCAN Optivum)",
+        "data": {
+          "plan_url": "Timetable URL",
+          "substitutions_url": "Substitutions URL"
+        }
+      },
+      "teacher": {
+        "title": "Teacher",
+        "data": {
+          "teacher": "Teacher",
+          "notify_services": "Notifications"
+        },
+        "data_description": {
+          "notify_services": "notify.* services that receive plan changes and new substitutions (e.g. mobile_app_<phone>). Empty = events only."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot download lista.html from the timetable URL",
+      "no_teachers": "No teachers found on lista.html"
+    },
+    "abort": {
+      "already_configured": "This teacher is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "data": {
+          "scan_interval": "Check interval",
+          "notify_services": "Notifications"
+        },
+        "data_description": {
+          "notify_services": "notify.* services that receive plan changes and new substitutions (e.g. mobile_app_<phone>). Empty = events only."
+        }
+      }
+    }
+  },
+  "device": {
+    "teacher": {
+      "name": "Timetable {teacher}"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "generated": {
+        "name": "Generated"
+      },
+      "valid_from": {
+        "name": "Valid from"
+      },
+      "substitutions": {
+        "name": "Substitutions"
+      },
+      "timetable": {
+        "name": "Timetable"
+      }
+    }
+  }
+}

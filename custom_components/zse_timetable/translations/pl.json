@@ -1,0 +1,65 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Plan lekcji (VULCAN Optivum)",
+        "data": {
+          "plan_url": "Adres planu lekcji",
+          "substitutions_url": "Adres strony zastępstw"
+        }
+      },
+      "teacher": {
+        "title": "Nauczyciel",
+        "data": {
+          "teacher": "Nauczyciel",
+          "notify_services": "Powiadomienia"
+        },
+        "data_description": {
+          "notify_services": "Usługi notify.*, na które idą zmiany planu i nowe zastępstwa (np. mobile_app_<telefon>). Puste = tylko zdarzenia zse_timetable_*."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie udało się pobrać lista.html spod adresu planu",
+      "no_teachers": "Na lista.html nie znaleziono nauczycieli"
+    },
+    "abort": {
+      "already_configured": "Ten nauczyciel jest już skonfigurowany"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opcje",
+        "data": {
+          "scan_interval": "Co ile sprawdzać",
+          "notify_services": "Powiadomienia"
+        },
+        "data_description": {
+          "notify_services": "Usługi notify.*, na które idą zmiany planu i nowe zastępstwa (np. mobile_app_<telefon>). Puste = tylko zdarzenia zse_timetable_*."
+        }
+      }
+    }
+  },
+  "device": {
+    "teacher": {
+      "name": "Plan lekcji {teacher}"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "generated": {
+        "name": "Wygenerowano"
+      },
+      "valid_from": {
+        "name": "Obowiązuje od"
+      },
+      "substitutions": {
+        "name": "Zastępstwa"
+      },
+      "timetable": {
+        "name": "Plan tygodniowy"
+      }
+    }
+  }
+}

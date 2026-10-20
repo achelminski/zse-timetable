@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+# Tests run against saved school pages with teachers' names - kept locally only
+tests/

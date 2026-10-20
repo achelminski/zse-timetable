@@ -1,0 +1,13 @@
+{
+  "domain": "zse_timetable",
+  "name": "ZSE Timetable",
+  "codeowners": ["@achelminski"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/achelminski/zse-timetable",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/achelminski/zse-timetable/issues",
+  "requirements": [],
+  "version": "1.1.0"
+}
