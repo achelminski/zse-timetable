@@ -6,6 +6,7 @@ do JSON (atrybuty sensora timetable).
 
 from __future__ import annotations
 
+import re
 from datetime import date, time, timedelta
 
 SUBSTITUTION_PREFIX = "Zastępstwo"
@@ -30,6 +31,26 @@ def lesson_parts(lesson: dict) -> tuple[str, str | None]:
     if len(tokens) >= 2:
         return " ".join(tokens[1:]), tokens[0]
     return summary, None
+
+
+def absent_teacher(absent: str | None) -> dict | None:
+    """Nauczyciel nieobecny z nagłówka bloku zastępstw: {first_name, last_name} albo None.
+
+    Nagłówek to zwykle 'Imię Nazwisko' ('Jan Kowalski'), czasem skrót
+    'J.Kowalski (Kw)'; bloki vacat ('Informatyka2 Vacat') nie wskazują osoby.
+    Liczone przy budowie dnia, nie w parserze — działa też dla zastępstw już zapisanych w Store.
+    """
+    if not absent or "vacat" in absent.casefold():
+        return None
+    name = re.sub(r"\s*\([^)]*\)\s*$", "", absent).strip()
+    if "." in name:
+        first, last = (part.strip() for part in name.split(".", 1))
+    else:
+        words = name.split()
+        if len(words) < 2:
+            return None
+        first, last = words[0], " ".join(words[1:])
+    return {"first_name": first, "last_name": last} if first and last else None
 
 
 def valid_from_text(version: dict | None) -> str | None:
@@ -131,6 +152,7 @@ def build_day(
                     "room": row.get("room"),
                     "substitution": True,
                     "absent": row.get("absent"),
+                    "absent_teacher": absent_teacher(row.get("absent")),
                     "notes": row.get("notes") or None,
                 }
             )

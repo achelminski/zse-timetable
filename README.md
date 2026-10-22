@@ -33,7 +33,8 @@ Options: notification services, check interval (default 60 min, minimum 15).
   - `teacher`, `generated`, `valid_from`, `valid_from_text` (the whole “Obowiązuje od: …” line from the timetable footer)
   - `lesson_hours`: `[{nr, start, end}]` — lesson grid of the timetable valid today
   - `days`: Mon–Fri of the current and next week (Sat/Sun only when they have lessons):
-    `[{date, weekday, lessons: [{nr, start, end, subject, group, room, substitution, absent?, notes?}]}]`;
+    `[{date, weekday, lessons: [{nr, start, end, subject, group, room, substitution, absent?, absent_teacher?, notes?}]}]`;
+    `absent_teacher` = `{first_name, last_name}` of the absent teacher (`null` for vacat blocks);
     a substitution has `substitution: true` and one entry per lesson number
   - `days` and `lesson_hours` are excluded from the recorder
 - `sensor.<device>_generated`, `sensor.<device>_valid_from` — dates from the timetable footer

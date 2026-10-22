@@ -37,6 +37,7 @@ from .const import (
 )
 from . import messages
 from .schedule import (
+    absent_teacher,
     build_timetable,
     lesson_hours,
     lesson_times,
@@ -237,6 +238,7 @@ class ZsePlanCoordinator(DataUpdateCoordinator[dict]):
             "group": row["group"],
             "room": row["room"],
             "absent": row["absent"],
+            "absent_teacher": absent_teacher(row["absent"]),
             "notes": row["notes"],
         }
 

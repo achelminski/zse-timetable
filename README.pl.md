@@ -32,7 +32,8 @@ Opcje: usługi powiadomień, interwał sprawdzania (domyślnie 60 min, minimum 1
   - `teacher`, `generated`, `valid_from`, `valid_from_text` (cała linia „Obowiązuje od: …” ze stopki planu)
   - `lesson_hours`: `[{nr, start, end}]` — siatka godzin planu obowiązującego dziś
   - `days`: Pn–Pt bieżącego i następnego tygodnia (So/Nd tylko z lekcjami):
-    `[{date, weekday, lessons: [{nr, start, end, subject, group, room, substitution, absent?, notes?}]}]`;
+    `[{date, weekday, lessons: [{nr, start, end, subject, group, room, substitution, absent?, absent_teacher?, notes?}]}]`;
+    `absent_teacher` = `{first_name, last_name}` nieobecnego nauczyciela (`null` dla bloków vacat);
     zastępstwo ma `substitution: true` i po jednym wpisie na każdy numer lekcji
   - `days` i `lesson_hours` są wyłączone z recordera
 - `sensor.plan_lekcji_<nauczyciel>_wygenerowano`, `..._obowiazuje_od` — daty ze stopki planu
