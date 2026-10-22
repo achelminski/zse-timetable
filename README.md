@@ -26,7 +26,7 @@ Copy `custom_components/zse_timetable/` to `/config/custom_components/zse_timeta
 2. Teacher — picked from the list on `lista.html` — and notification services (`notify.*`, e.g.
    `mobile_app_<phone>` or `persistent_notification`; several allowed, empty = events only).
 
-Options: notification services, check interval (default 60 min, minimum 15).
+Options: notification services, error notification services, check interval (default 60 min, minimum 15).
 
 ## Entities (example for teacher J.Kowalski)
 - `sensor.timetable_j_kowalski` — state: Monday of the current week; attributes:
@@ -62,3 +62,11 @@ The integration calls the selected `notify.<service>` itself (title + message); 
 It also fires bus events for your own automations:
 - `zse_timetable_updated` — new timetable: `teacher, generated, valid_from, note, text`
 - `zse_timetable_substitution` — new rows with the teacher as substitute: `teacher, date, weekday, lessons[], text`
+- `zse_timetable_fetch_error` — the timetable or substitutions could not be downloaded (network, HTTP error, unexpected
+  page layout): `teacher, error, text`; fired once per outage, on the first failed check
+- `zse_timetable_fetch_restored` — first successful check after an outage: `teacher, since, text`
+
+The two outage messages go to the separate **error notification services** option (e.g. the administrator's
+`mobile_app_<phone>`), not to the timetable notification services. The outage state is kept in `.storage`, so a
+restart during an outage does not repeat the alert. If Home Assistant itself has lost internet access, the push alert
+cannot be delivered either — the “works again” message (with the outage start time) arrives after recovery.

@@ -12,10 +12,12 @@
         "title": "Nauczyciel",
         "data": {
           "teacher": "Nauczyciel",
-          "notify_services": "Powiadomienia"
+          "notify_services": "Powiadomienia",
+          "error_notify_services": "Alerty o błędach"
         },
         "data_description": {
-          "notify_services": "Usługi notify.*, na które idą zmiany planu i nowe zastępstwa (np. mobile_app_<telefon>). Puste = tylko zdarzenia zse_timetable_*."
+          "notify_services": "Usługi notify.*, na które idą zmiany planu i nowe zastępstwa (np. mobile_app_<telefon>). Puste = tylko zdarzenia zse_timetable_*.",
+          "error_notify_services": "Usługi notify.*, które dostaną alert, gdy nie da się pobrać planu lub zastępstw (raz na awarię), i komunikat, gdy pobieranie znów działa. Puste = bez alertów."
         }
       }
     },
@@ -33,10 +35,12 @@
         "title": "Opcje",
         "data": {
           "scan_interval": "Co ile sprawdzać",
-          "notify_services": "Powiadomienia"
+          "notify_services": "Powiadomienia",
+          "error_notify_services": "Alerty o błędach"
         },
         "data_description": {
-          "notify_services": "Usługi notify.*, na które idą zmiany planu i nowe zastępstwa (np. mobile_app_<telefon>). Puste = tylko zdarzenia zse_timetable_*."
+          "notify_services": "Usługi notify.*, na które idą zmiany planu i nowe zastępstwa (np. mobile_app_<telefon>). Puste = tylko zdarzenia zse_timetable_*.",
+          "error_notify_services": "Usługi notify.*, które dostaną alert, gdy nie da się pobrać planu lub zastępstw (raz na awarię), i komunikat, gdy pobieranie znów działa. Puste = bez alertów."
         }
       }
     }

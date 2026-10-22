@@ -12,10 +12,12 @@
         "title": "Teacher",
         "data": {
           "teacher": "Teacher",
-          "notify_services": "Notifications"
+          "notify_services": "Notifications",
+          "error_notify_services": "Error notifications"
         },
         "data_description": {
-          "notify_services": "notify.* services that receive plan changes and new substitutions (e.g. mobile_app_<phone>). Empty = events only."
+          "notify_services": "notify.* services that receive plan changes and new substitutions (e.g. mobile_app_<phone>). Empty = events only.",
+          "error_notify_services": "notify.* services alerted when the timetable or substitutions cannot be downloaded (once per outage) and when downloading works again. Empty = no alerts."
         }
       }
     },
@@ -33,10 +35,12 @@
         "title": "Options",
         "data": {
           "scan_interval": "Check interval",
-          "notify_services": "Notifications"
+          "notify_services": "Notifications",
+          "error_notify_services": "Error notifications"
         },
         "data_description": {
-          "notify_services": "notify.* services that receive plan changes and new substitutions (e.g. mobile_app_<phone>). Empty = events only."
+          "notify_services": "notify.* services that receive plan changes and new substitutions (e.g. mobile_app_<phone>). Empty = events only.",
+          "error_notify_services": "notify.* services alerted when the timetable or substitutions cannot be downloaded (once per outage) and when downloading works again. Empty = no alerts."
         }
       }
     }

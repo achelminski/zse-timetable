@@ -25,7 +25,7 @@ Skopiuj `custom_components/zse_timetable/` do `/config/custom_components/zse_tim
 2. Nauczyciel — z listy z `lista.html` — oraz usługi powiadomień (`notify.*`, np. `mobile_app_<telefon>` albo
    `persistent_notification`; można kilka, puste = tylko zdarzenia).
 
-Opcje: usługi powiadomień, interwał sprawdzania (domyślnie 60 min, minimum 15).
+Opcje: usługi powiadomień, usługi alertów o błędach, interwał sprawdzania (domyślnie 60 min, minimum 15).
 
 ## Encje (przykład dla J.Kowalski)
 - `sensor.timetable_j_kowalski` — stan: poniedziałek bieżącego tygodnia; atrybuty:
@@ -61,3 +61,11 @@ Integracja sama woła wybrane usługi `notify.<nazwa>` (tytuł + treść); niedo
 Niezależnie odpala zdarzenia do własnych automatyzacji:
 - `zse_timetable_updated` — nowy plan: `teacher, generated, valid_from, note, text`
 - `zse_timetable_substitution` — nowe zastępstwa nauczyciela: `teacher, date, weekday, lessons[], text`
+- `zse_timetable_fetch_error` — nie udało się pobrać planu lub zastępstw (sieć, błąd HTTP, nieoczekiwany układ
+  strony): `teacher, error, text`; raz na awarię, przy pierwszym nieudanym sprawdzeniu
+- `zse_timetable_fetch_restored` — pierwsze udane sprawdzenie po awarii: `teacher, since, text`
+
+Oba komunikaty o awarii idą na osobną opcję **alerty o błędach** (np. `mobile_app_<telefon>` administratora), nie na
+usługi powiadomień o planie. Stan awarii jest w `.storage`, więc restart w trakcie awarii nie powtarza alertu. Gdy
+internet straci sam Home Assistant, alert push też nie wyjdzie — komunikat „znów działa” (z czasem początku awarii)
+przyjdzie po naprawie.

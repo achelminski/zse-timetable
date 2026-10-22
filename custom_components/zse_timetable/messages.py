@@ -5,7 +5,7 @@ No Home Assistant imports — testable locally.
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 TEXTS = {
     "pl": {
@@ -18,6 +18,11 @@ TEXTS = {
         "lesson": "lekcja",
         "room": "sala",
         "absent": "za",
+        "fetch_error_title": "Plan lekcji — błąd pobierania",
+        "fetch_error_text": "Nie udało się pobrać planu lub zastępstw {teacher}: {error}. "
+        "Kolejne próby co {interval} min, powiadomię po naprawie.",
+        "fetch_ok_title": "Plan lekcji — pobieranie działa",
+        "fetch_ok_text": "Pobieranie planu i zastępstw {teacher} znów działa (awaria od {since}).",
     },
     "en": {
         "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
@@ -29,6 +34,11 @@ TEXTS = {
         "lesson": "lesson",
         "room": "room",
         "absent": "covering for",
+        "fetch_error_title": "Timetable — download failed",
+        "fetch_error_text": "Could not download the timetable or substitutions of {teacher}: {error}. "
+        "Retrying every {interval} min, you will be notified when it works again.",
+        "fetch_ok_title": "Timetable — download restored",
+        "fetch_ok_text": "Downloading the timetable and substitutions of {teacher} works again (failing since {since}).",
     },
 }
 
@@ -57,6 +67,22 @@ def plan_updated(lang: str, teacher: str, plan: dict) -> tuple[str, str]:
     if plan.get("note"):
         text += f" {plan['note']}"
     return t["plan_title"], text
+
+
+def fetch_error(lang: str, teacher: str, error: str, interval: int) -> tuple[str, str]:
+    """(title, message) for the first failed check of an outage."""
+    t = TEXTS[lang]
+    return t["fetch_error_title"], t["fetch_error_text"].format(
+        teacher=teacher, error=error, interval=interval
+    )
+
+
+def fetch_restored(lang: str, teacher: str, since: datetime) -> tuple[str, str]:
+    """(title, message) for the first successful check after an outage; since = local time it started."""
+    t = TEXTS[lang]
+    return t["fetch_ok_title"], t["fetch_ok_text"].format(
+        teacher=teacher, since=since.strftime("%d.%m.%Y %H:%M")
+    )
 
 
 def substitutions(lang: str, teacher: str, day: date, lessons: list[dict]) -> tuple[str, str]:

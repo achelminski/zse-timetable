@@ -10,6 +10,7 @@ CONF_TEACHER_CODE = "teacher_code"
 CONF_TEACHER_HREF = "teacher_href"
 CONF_SCAN_INTERVAL = "scan_interval"
 CONF_NOTIFY = "notify_services"  # nazwy usług notify.* (bez domeny), np. mobile_app_<telefon>
+CONF_NOTIFY_ERRORS = "error_notify_services"  # j.w., odbiorcy alertów o błędzie pobierania
 
 # Usługi notify, których nie da się wywołać samym title/message (wymagają targetu) albo są zbiorcze.
 NOTIFY_EXCLUDED = {"send_message", "notify"}
@@ -27,3 +28,5 @@ KEEP_SUBSTITUTIONS_DAYS = 60
 
 EVENT_PLAN_UPDATED = "zse_timetable_updated"
 EVENT_SUBSTITUTION = "zse_timetable_substitution"
+EVENT_FETCH_ERROR = "zse_timetable_fetch_error"
+EVENT_FETCH_RESTORED = "zse_timetable_fetch_restored"

@@ -1,4 +1,4 @@
-"""Config flow: adresy stron -> wybór nauczyciela z listy planu; opcje: interwał."""
+"""Config flow: adresy stron -> wybór nauczyciela z listy planu; opcje: powiadomienia, alerty błędów, interwał."""
 
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ from homeassistant.helpers.selector import (
 from . import parser
 from .const import (
     CONF_NOTIFY,
+    CONF_NOTIFY_ERRORS,
     CONF_PLAN_URL,
     CONF_SCAN_INTERVAL,
     CONF_SUBSTITUTIONS_URL,
@@ -121,6 +122,7 @@ class ZsePlanConfigFlow(ConfigFlow, domain=DOMAIN):
                 options={
                     CONF_SCAN_INTERVAL: DEFAULT_SCAN_INTERVAL,
                     CONF_NOTIFY: user_input.get(CONF_NOTIFY, []),
+                    CONF_NOTIFY_ERRORS: user_input.get(CONF_NOTIFY_ERRORS, []),
                 },
             )
 
@@ -134,6 +136,7 @@ class ZsePlanConfigFlow(ConfigFlow, domain=DOMAIN):
                     )
                 ),
                 vol.Optional(CONF_NOTIFY, default=[]): _notify_selector(self.hass, []),
+                vol.Optional(CONF_NOTIFY_ERRORS, default=[]): _notify_selector(self.hass, []),
             }
         )
         return self.async_show_form(step_id="teacher", data_schema=schema)
@@ -151,12 +154,17 @@ class ZsePlanOptionsFlow(OptionsFlow):
                 data={
                     CONF_SCAN_INTERVAL: int(user_input[CONF_SCAN_INTERVAL]),
                     CONF_NOTIFY: user_input.get(CONF_NOTIFY, []),
+                    CONF_NOTIFY_ERRORS: user_input.get(CONF_NOTIFY_ERRORS, []),
                 }
             )
         current = self.config_entry.options.get(CONF_NOTIFY, [])
+        current_errors = self.config_entry.options.get(CONF_NOTIFY_ERRORS, [])
         schema = vol.Schema(
             {
                 vol.Optional(CONF_NOTIFY, default=current): _notify_selector(self.hass, current),
+                vol.Optional(CONF_NOTIFY_ERRORS, default=current_errors): _notify_selector(
+                    self.hass, current_errors
+                ),
                 vol.Required(
                     CONF_SCAN_INTERVAL,
                     default=self.config_entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import logging
 from urllib.parse import urljoin
 
@@ -19,6 +19,7 @@ from homeassistant.util import dt as dt_util
 from . import parser
 from .const import (
     CONF_NOTIFY,
+    CONF_NOTIFY_ERRORS,
     CONF_PLAN_URL,
     CONF_SCAN_INTERVAL,
     CONF_SUBSTITUTIONS_URL,
@@ -28,6 +29,8 @@ from .const import (
     CONF_TEACHER_NAME,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    EVENT_FETCH_ERROR,
+    EVENT_FETCH_RESTORED,
     EVENT_PLAN_UPDATED,
     EVENT_SUBSTITUTION,
     KEEP_SUBSTITUTIONS_DAYS,
@@ -66,6 +69,7 @@ class ZsePlanCoordinator(DataUpdateCoordinator[dict]):
         self.teacher_label: str = entry.data[CONF_TEACHER]
         self.teacher_name: str = entry.data[CONF_TEACHER_NAME]
         self.notify_services: list[str] = list(entry.options.get(CONF_NOTIFY, []))
+        self.error_notify_services: list[str] = list(entry.options.get(CONF_NOTIFY_ERRORS, []))
         self.last_error: str | None = None
         self._store: Store[dict] = Store(hass, STORAGE_VERSION, f"{DOMAIN}.{entry.entry_id}")
         self.state: dict = {
@@ -75,6 +79,7 @@ class ZsePlanCoordinator(DataUpdateCoordinator[dict]):
             "http": {},
             "teacher_href": entry.data[CONF_TEACHER_HREF],
             "last_check": None,
+            "fetch_error_since": None,  # początek trwającej awarii pobierania (alert już wysłany)
         }
 
     async def async_load(self) -> None:
@@ -126,8 +131,46 @@ class ZsePlanCoordinator(DataUpdateCoordinator[dict]):
                 raise UpdateFailed(self.last_error)
         else:
             self.last_error = None
+        await self._track_fetch_state()
         await self._store.async_save(self.state)
         return self.state
+
+    async def _track_fetch_state(self) -> None:
+        """Alert raz na awarię (pierwszy nieudany cykl) i komunikat o powrocie; stan w Store przetrwa restart."""
+        since = self.state.get("fetch_error_since")
+        if self.last_error and not since:
+            self.state["fetch_error_since"] = self.state["last_check"]
+            title, text = messages.fetch_error(
+                self.lang,
+                self.teacher_name,
+                self.last_error,
+                int(self.update_interval.total_seconds() // 60),
+            )
+            self.hass.bus.async_fire(
+                EVENT_FETCH_ERROR,
+                {
+                    "entry_id": self.config_entry.entry_id,
+                    "teacher": self.teacher_label,
+                    "error": self.last_error,
+                    "text": text,
+                },
+            )
+            await self._notify(title, text, self.error_notify_services)
+        elif not self.last_error and since:
+            self.state["fetch_error_since"] = None
+            title, text = messages.fetch_restored(
+                self.lang, self.teacher_name, dt_util.as_local(datetime.fromisoformat(since))
+            )
+            self.hass.bus.async_fire(
+                EVENT_FETCH_RESTORED,
+                {
+                    "entry_id": self.config_entry.entry_id,
+                    "teacher": self.teacher_label,
+                    "since": since,
+                    "text": text,
+                },
+            )
+            await self._notify(title, text, self.error_notify_services)
 
     async def _update_plan(self) -> None:
         base = self.config_entry.data[CONF_PLAN_URL]
@@ -186,9 +229,9 @@ class ZsePlanCoordinator(DataUpdateCoordinator[dict]):
         """Język powiadomień i etykiet: język HA (pl), w pozostałych przypadkach angielski."""
         return messages.language(self.hass.config.language)
 
-    async def _notify(self, title: str, message: str) -> None:
-        """Wysyła na usługi notify.* wybrane w konfiguracji integracji."""
-        for service in self.notify_services:
+    async def _notify(self, title: str, message: str, services: list[str] | None = None) -> None:
+        """Wysyła na usługi notify.* wybrane w konfiguracji integracji (domyślnie lista planu/zastępstw)."""
+        for service in self.notify_services if services is None else services:
             try:
                 await self.hass.services.async_call(
                     "notify", service, {"title": title, "message": message}, blocking=True
