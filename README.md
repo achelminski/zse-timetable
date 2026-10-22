@@ -38,6 +38,8 @@ Options: notification services, check interval (default 60 min, minimum 15).
   - `days` and `lesson_hours` are excluded from the recorder
 - `sensor.<device>_generated`, `sensor.<device>_valid_from` — dates from the timetable footer
 - `sensor.<device>_substitutions` — number of upcoming substitutions, list in an attribute
+- `sensor.<device>_last_check` (diagnostic) — time of the last check, error (if any) in the `blad` attribute;
+  changes every interval, so each check shows up in the logbook
 
 Entity and device names, notification texts, weekday names and the substitution label follow the
 Home Assistant language: Polish for `pl`, English otherwise.

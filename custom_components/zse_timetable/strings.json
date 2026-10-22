@@ -59,6 +59,9 @@
       },
       "timetable": {
         "name": "Timetable"
+      },
+      "last_check": {
+        "name": "Last check"
       }
     }
   }

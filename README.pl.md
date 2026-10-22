@@ -37,6 +37,8 @@ Opcje: usługi powiadomień, interwał sprawdzania (domyślnie 60 min, minimum 1
   - `days` i `lesson_hours` są wyłączone z recordera
 - `sensor.plan_lekcji_<nauczyciel>_wygenerowano`, `..._obowiazuje_od` — daty ze stopki planu
 - `sensor.plan_lekcji_<nauczyciel>_zastepstwa` — liczba nadchodzących zastępstw, lista w atrybucie
+- `sensor.plan_lekcji_<nauczyciel>_ostatnie_sprawdzenie` (diagnostyka) — czas ostatniego sprawdzenia, błąd (jeśli był)
+  w atrybucie `blad`; zmienia się co interwał, więc każde sprawdzenie widać w historii aktywności
 
 Nazwy encji i urządzenia, treść powiadomień, nazwy dni i etykieta zastępstwa są w języku Home Assistant:
 polskim dla `pl`, angielskim w pozostałych przypadkach.

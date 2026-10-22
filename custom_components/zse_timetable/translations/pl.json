@@ -59,6 +59,9 @@
       },
       "timetable": {
         "name": "Plan tygodniowy"
+      },
+      "last_check": {
+        "name": "Ostatnie sprawdzenie"
       }
     }
   }

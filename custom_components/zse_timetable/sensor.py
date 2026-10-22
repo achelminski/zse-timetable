@@ -1,14 +1,15 @@
-"""Sensory: data wygenerowania planu, data obowiązywania, nadchodzące zastępstwa, plan (timetable).
+"""Sensory: data wygenerowania planu, data obowiązywania, nadchodzące zastępstwa, plan (timetable), ostatnie sprawdzenie.
 
 Nazwy encji z tłumaczeń (strings.json / translations), unique_id bez zmian.
 """
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.const import EntityCategory
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.util import dt as dt_util, slugify
@@ -29,6 +30,7 @@ async def async_setup_entry(
             PlanDateSensor(coordinator, "obowiazuje_od", "valid_from", "valid_from", "mdi:calendar-start"),
             SubstitutionsSensor(coordinator, "zastepstwa"),
             TimetableSensor(coordinator, "timetable"),
+            LastCheckSensor(coordinator, "ostatnie_sprawdzenie"),
         ]
     )
 
@@ -109,3 +111,24 @@ class SubstitutionsSensor(ZsePlanEntity, SensorEntity):
             "ostatnie_sprawdzenie": self.coordinator.state.get("last_check"),
             "blad": self.coordinator.last_error,
         }
+
+
+class LastCheckSensor(ZsePlanEntity, SensorEntity):
+    """Czas ostatniego cyklu sprawdzania — stan zmienia się co interwał, więc każdy cykl widać w historii aktywności.
+
+    Pozostałe sensory zmieniają stan tylko przy nowym planie/zastępstwie, a sam atrybut logbook pomija.
+    """
+
+    _attr_translation_key = "last_check"
+    _attr_icon = "mdi:clock-check-outline"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    @property
+    def native_value(self) -> datetime | None:
+        value = self.coordinator.state.get("last_check")
+        return dt_util.parse_datetime(value) if value else None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        return {"blad": self.coordinator.last_error}
